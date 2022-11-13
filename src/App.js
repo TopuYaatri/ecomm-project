@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-//import Modal from 'react-modal';
+import {v4} from 'uuid';
 
 function App() {
   const [inputField, setInputField] = useState([]);
   const [modals, setModals] = useState(false);
+  const [modals_two, setModals_two] = useState(false);
+  const [del, setDel] = useState();
   const [index, setIndex] = useState();
 
   const submitButton = (e) => {
     setInputField([
       ...inputField,
       {
+        id: v4(),
         product_name: document.getElementById("product_name").value,
         description: document.getElementById("description").value,
         price: document.getElementById("price").value,
@@ -19,21 +22,23 @@ function App() {
     e.preventDefault();
   };
 
-  const delRow = (e) => {
-    setInputField(inputField.filter((x) => x.product_name !== e.target.id));
+  const delRow = () => {
+    setInputField(inputField.filter((x) => x.id !== del));
+    setModals_two(false);
   };
 
   function editRow(e) {
     setModals(!modals);
     const newId = e.target.id;
 
-    setIndex(inputField.map((obj) => obj.product_name).indexOf(newId));
+    setIndex(inputField.map((obj) => obj.id).indexOf(newId));
   }
 
   useEffect(() => {}, [index]);
 
   function editObject(e) {
     inputField.splice(index, 1, {
+      id : inputField[index].id,
       product_name: document.getElementById("product_name_modal").value,
       description: document.getElementById("description_modal").value,
       price: document.getElementById("price_modal").value,
@@ -70,6 +75,7 @@ function App() {
       <table className="table">
         <tbody>
           <tr className="row">
+            <th>ID</th>
             <th>Product Name</th>
             <th>Description</th>
             <th>Price</th>
@@ -78,17 +84,18 @@ function App() {
           </tr>
 
           {inputField.map((inObj) => (
-            <tr key={inObj.product_name}>
+            <tr key={inObj.id}>
+              <td>{inObj.id}</td>
               <td className= "td">{inObj.product_name}</td>
               <td>{inObj.description}</td>
               <td>{inObj.price}</td>
               <td>
-                <button id={inObj.product_name} onClick={delRow}>
+                <button id={inObj.id} onClick={()=>{setDel(inObj.id); setModals_two(true) }}>
                   delete
                 </button>
               </td>
               <td>
-                <button id={inObj.product_name} onClick={editRow}>
+                <button id={inObj.id} onClick={editRow}>
                   edit
                 </button>
               </td>
@@ -97,10 +104,22 @@ function App() {
         </tbody>
       </table>
       </div>
+      {modals_two === true && (
+        <div className = "backShadow">
+        <div className = "alert_div" >
 
+        Are you sure you want to delete this product?
+
+        <button onClick = {delRow}> yes</button>
+        <button onClick={()=>setModals_two(false)}> no </button>
+        </div>
+          
+        </div>
+
+      )}
       {modals === true && (
         <div className="backShadow">
-          <div className="modal_div">
+          <div >
             <form className = "form_two" onSubmit={editObject}>
               <label >Product Name</label>
               <input
