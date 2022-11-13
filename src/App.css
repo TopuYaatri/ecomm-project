@@ -59,6 +59,19 @@ table{
   padding-top: 30px;
 }
 
+.alert_div{
+  color:white; 
+  text-align: center;
+  border-radius: 15px;
+  background-color: rgb(91, 76, 185);
+  width: 350px;
+  height: 150px;
+  margin-top: 50px;
+  margin-left:500px;
+  padding-top: 30px;
+
+}
+
 label{
 
   margin-top: 200px;
